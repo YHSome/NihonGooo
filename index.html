@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f3eb" />
+    <title>NihonGooo · 日语逐词对照</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://translate.googleapis.com" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div class="brand"><span class="brand-dot">に</span> NihonGooo</div>
+        <p class="eyebrow">JAPANESE, ONE WORD AT A TIME</p>
+        <h1>把日语真正<br /><em>看懂。</em></h1>
+        <p class="intro">输入中文或日文，获得可逐词核对的日语、假名、罗马音与中文释义。</p>
+      </header>
+
+      <section class="workbench" aria-label="翻译与对照">
+        <div class="input-head">
+          <label for="source">写下想学的一句话</label>
+          <button class="ghost-button" id="exampleButton" type="button">试试例句 →</button>
+        </div>
+        <textarea id="source" rows="4" placeholder="例如：我明天要和朋友去东京。&#10;或：明日は友達と東京へ行きます。"></textarea>
+        <div class="actions">
+          <span class="hint" id="inputHint">自动识别中文／日文</span>
+          <button class="translate-button" id="translateButton" type="button">
+            <span>生成逐词对照</span><b>↗</b>
+          </button>
+        </div>
+      </section>
+
+      <section class="result is-empty" id="result" aria-live="polite">
+        <div class="result-heading">
+          <div>
+            <p class="eyebrow">WORD MAP</p>
+            <h2>逐词对照</h2>
+          </div>
+          <button class="copy-button" id="copyButton" type="button" disabled>复制笔记</button>
+        </div>
+        <div class="empty-state" id="emptyState">
+          <span>あ</span>
+          <p>输入一句话，日语学习地图会在这里展开。</p>
+        </div>
+        <div class="answer" id="answer" hidden>
+          <div class="sentence-card">
+            <div class="sentence-label">自然日语</div>
+            <div class="japanese-sentence" id="japaneseSentence"></div>
+            <div class="sentence-reading" id="sentenceReading"></div>
+            <div class="sentence-kana" id="sentenceKana"></div>
+            <div class="sentence-meaning" id="sentenceMeaning"></div>
+          </div>
+          <div class="legend"><span class="legend-particle">助</span> 助词／语法功能词会特别标明</div>
+          <div class="word-list" id="wordList"></div>
+          <p class="source-note">翻译由在线翻译服务生成；逐词切分与词类标注由日语形态分析器完成。机器翻译适合作为学习起点，请结合语境理解。</p>
+        </div>
+      </section>
+    </main>
+    <footer>NIHONGOOO · 日语逐词对照练习</footer>
+    <script src="https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

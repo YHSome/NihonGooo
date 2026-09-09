@@ -1,0 +1,18 @@
+// Keeps Android dependency resolution usable on networks that cannot reach
+// Google's Maven host directly. The generated Capacitor modules add their
+// repositories after this hook, so this mirror is tried first.
+allprojects { project ->
+    project.buildscript.repositories {
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+    }
+    project.repositories {
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+    }
+    project.afterEvaluate {
+        if (project.extensions.findByName('android') != null) {
+            project.android.buildToolsVersion = '36.1.0'
+        }
+    }
+}

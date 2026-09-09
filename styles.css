@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=Noto+Serif+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root { --ink:#20241f; --muted:#6e756b; --paper:#f7f3eb; --card:#fffdf8; --line:#d9d4c8; --moss:#294a3c; --orange:#e96137; --pale:#e9f0e5; }
+* { box-sizing:border-box; }
+[hidden] { display:none !important; }
+body { margin:0; color:var(--ink); background:var(--paper); font-family:Outfit,"Noto Sans SC",sans-serif; min-height:100vh; }
+body:before { content:""; position:fixed; width:45vw; height:45vw; max-width:560px; max-height:560px; right:-14vw; top:-12vw; border-radius:50%; background:#e7ede0; opacity:.8; z-index:-1; }
+.shell { max-width:900px; margin:0 auto; padding:78px 28px 46px; }
+.hero { max-width:610px; }
+.brand { font-family:"DM Mono",monospace; letter-spacing:.03em; font-size:.91rem; display:flex; align-items:center; gap:8px; }
+.brand-dot { color:white; background:var(--orange); display:inline-grid; place-items:center; border-radius:50%; width:27px; height:27px; font-family:"Noto Serif JP",serif; }
+.eyebrow { font-family:"DM Mono",monospace; font-size:.68rem; letter-spacing:.13em; color:var(--muted); margin:36px 0 10px; }
+h1,h2 { margin:0; font-family:"Noto Serif JP",serif; letter-spacing:-.045em; }
+h1 { font-size:clamp(2.8rem,7vw,5rem); font-weight:600; line-height:1.1; }
+h1 em { color:var(--orange); font-style:normal; }
+.intro { color:var(--muted); font-size:1.05rem; line-height:1.65; max-width:450px; margin:20px 0 34px; }
+.workbench,.result { background:var(--card); border:1px solid var(--line); box-shadow:0 7px 0 rgba(32,36,31,.03); }
+.workbench { padding:22px; border-radius:18px; }
+.input-head,.actions,.result-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+label { font-weight:600; }
+button { border:0; font:inherit; cursor:pointer; }
+.ghost-button,.copy-button { background:transparent; color:var(--moss); font-size:.85rem; font-weight:600; padding:5px; }
+textarea { width:100%; resize:vertical; margin:15px 0 13px; padding:15px 16px; border:1px solid var(--line); background:#fffefa; border-radius:10px; color:var(--ink); font:1rem/1.55 Outfit,"Noto Sans SC",sans-serif; outline:none; transition:border .2s, box-shadow .2s; }
+textarea:focus { border-color:var(--moss); box-shadow:0 0 0 3px #dbe7dd; }
+.hint { color:var(--muted); font-size:.82rem; }
+.translate-button { display:flex; align-items:center; gap:16px; background:var(--moss); color:#fff; padding:11px 14px 11px 18px; border-radius:9px; font-weight:600; transition:transform .15s, background .15s; }
+.translate-button:hover { background:#1d3a2e; transform:translateY(-1px); }.translate-button b { font-size:1.12rem; color:#b9d4a8; }
+.translate-button:disabled { opacity:.6; cursor:wait; transform:none; }
+.result { margin-top:24px; padding:28px; border-radius:18px; }
+.result-heading h2 { font-size:1.9rem; }.result-heading .eyebrow { margin:0 0 5px; }.copy-button:disabled { color:#aaa; cursor:default; }
+.empty-state { min-height:255px; display:grid; place-content:center; text-align:center; color:var(--muted); }.empty-state span { font:4rem "Noto Serif JP",serif; color:#c6d4c4; }.empty-state p { max-width:220px; line-height:1.5; }
+.sentence-card { margin-top:26px; padding:21px 22px; border-radius:12px; background:var(--pale); border-left:4px solid var(--moss); }.sentence-label { color:var(--moss); font-family:"DM Mono",monospace; font-size:.68rem; letter-spacing:.1em; }.japanese-sentence { margin-top:8px; font:600 clamp(1.55rem,4vw,2rem)/1.5 "Noto Serif JP",serif; }.sentence-kana { color:#455b4c; font:.95rem "Noto Serif JP",serif; margin-top:5px; }.sentence-reading { color:var(--muted); font:.78rem "DM Mono",monospace; margin-top:5px; }.sentence-meaning { margin-top:10px; font-size:1.03rem; }
+.legend { margin:27px 0 11px; color:var(--muted); font-size:.8rem; }.legend-particle,.tag { display:inline-block; border-radius:4px; background:#fbd9ce; color:#a94123; padding:2px 5px; font:600 .68rem "DM Mono",monospace; margin-right:5px; vertical-align:1px; }.word-list { border-top:1px solid var(--line); }
+.word { display:grid; grid-template-columns:minmax(110px,1.15fr) minmax(130px,1.35fr) minmax(135px,1.5fr); align-items:center; gap:14px; padding:15px 5px; border-bottom:1px solid var(--line); }.word.is-particle { background:#fff8f4; margin:0 -7px; padding-left:12px; padding-right:12px; }.word-jp { font:600 1.25rem "Noto Serif JP",serif; }.word-kana { color:var(--muted); font-size:.96rem; word-break:break-word; }.romaji-above { display:block; color:#92978f; font:.72rem "DM Mono",monospace; letter-spacing:.015em; margin-bottom:3px; }.word-meaning { line-height:1.35; }.pos-note { display:block; color:#a94123; font-size:.75rem; margin-top:3px; }.source-note { color:#8b8d87; font-size:.75rem; line-height:1.55; margin:18px 0 0; }
+footer { text-align:center; padding:16px; color:#8b8d87; font: .65rem "DM Mono",monospace; letter-spacing:.09em; }
+@media (max-width:620px) { .shell { padding:48px 16px 26px; }.result,.workbench { padding:19px; }.word { grid-template-columns:1fr 1.3fr; gap:7px 14px; }.word-jp { grid-column:1; }.word-kana { grid-column:2; }.word-meaning { grid-column:1 / -1; }.sentence-card { padding:17px; }.hint { display:none; } }

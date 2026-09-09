@@ -1,0 +1,20 @@
+{
+  "name": "nihongooo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "中文与日文逐词对照学习工具",
+  "scripts": {
+    "build:web": "node scripts/build-web.mjs",
+    "android:sync": "npm run build:web && npx cap sync android",
+    "android:debug": "npm run android:sync && cd android && gradlew.bat --init-script ../scripts/gradle-init.gradle assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "typescript": "^7.0.2"
+  }
+}
