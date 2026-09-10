@@ -36,13 +36,21 @@ function loadTokenizer() {
 
 function containsJapanese(text) { return /[\u3040-\u30ff\u3400-\u9fff]/.test(text); }
 
-async function googleTranslate(text, from, to) {
-  const url = new URL('https://translate.googleapis.com/translate_a/single');
-  url.search = new URLSearchParams({ client:'gtx', sl:from, tl:to, dt:'t', q:text });
+async function translateText(text, from, to) {
+  if (new TextEncoder().encode(text).length > 500) {
+    throw new Error('公开翻译服务每次最多支持 500 字节，请将内容拆成更短的句子。');
+  }
+  const url = new URL('https://api.mymemory.translated.net/get');
+  url.search = new URLSearchParams({ q:text, langpair:`${from}|${to}`, mt:'1' });
   const response = await fetch(url);
   if (!response.ok) throw new Error('翻译服务暂时不可用，请稍后重试。');
   const data = await response.json();
-  return data[0].map(part => part[0]).join('');
+  if (data.responseStatus !== 200 || !data.responseData?.translatedText) {
+    throw new Error('翻译服务未返回有效结果，请稍后重试。');
+  }
+  const decoded = document.createElement('textarea');
+  decoded.innerHTML = data.responseData.translatedText;
+  return decoded.value;
 }
 
 function kataToHira(value = '') { return value.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60)); }
@@ -86,7 +94,7 @@ async function translateTokens(tokens) {
   const meanings = new Map();
   unique.forEach(term => { if (learnerGlossary[term]) meanings.set(term, learnerGlossary[term]); });
   await Promise.all(unique.filter(term => !meanings.has(term)).map(async term => {
-    try { meanings.set(term, await googleTranslate(term, 'ja', 'zh-CN')); }
+    try { meanings.set(term, await translateText(term, 'ja', 'zh-CN')); }
     catch { meanings.set(term, '—'); }
   }));
   return meanings;
@@ -124,8 +132,8 @@ async function runTranslation() {
   try {
     await loadTokenizer();
     const isJapanese = containsJapanese(input) && !/[\u4e00-\u9fff]/.test(input.replace(/[\u3040-\u30ff]/g, '')) ? true : /[ぁ-んァ-ン]/.test(input);
-    const japanese = isJapanese ? input : await googleTranslate(input, 'zh-CN', 'ja');
-    const chinese = isJapanese ? await googleTranslate(input, 'ja', 'zh-CN') : input;
+    const japanese = isJapanese ? input : await translateText(input, 'zh-CN', 'ja');
+    const chinese = isJapanese ? await translateText(input, 'ja', 'zh-CN') : input;
     const tokens = tokenizer.tokenize(japanese);
     const meanings = await translateTokens(tokens);
     render(tokens, meanings, japanese, chinese);

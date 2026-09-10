@@ -4,7 +4,7 @@
 
 ## 本地预览
 
-直接在浏览器打开 `index.html`。翻译和日语词典通过网络加载。
+通过 HTTP 服务或 GitHub Pages 打开网站。翻译由无需登录的 MyMemory 公开 API 提供，日语词典通过网络加载。
 
 ## Android APK
 
