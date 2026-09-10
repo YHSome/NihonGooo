@@ -3,9 +3,9 @@
 [hidden] { display:none !important; }
 body { margin:0; color:var(--ink); background:var(--paper); font-family:Outfit,"Noto Sans SC",sans-serif; min-height:100vh; }
 body:before { content:""; position:fixed; width:45vw; height:45vw; max-width:560px; max-height:560px; right:-14vw; top:-12vw; border-radius:50%; background:#e7ede0; opacity:.8; z-index:-1; }
-.shell { max-width:900px; margin:0 auto; padding:78px 28px 46px; }
-.hero { max-width:610px; position:relative; }
-.guide-link,.back-link { color:var(--moss); font-size:.9rem; font-weight:700; text-decoration:none; }.guide-link { position:absolute; right:0; top:2px; }.guide-link span { color:var(--orange); margin-left:4px; }
+.shell { max-width:900px; margin:0 auto; padding:78px 28px 46px; position:relative; }
+.hero { max-width:610px; }
+.guide-link,.back-link { color:var(--moss); font-size:.9rem; font-weight:700; text-decoration:none; }.guide-link { position:absolute; right:28px; top:80px; }.guide-link span { color:var(--orange); margin-left:4px; }
 .brand { font-family:"DM Mono",monospace; letter-spacing:.03em; font-size:.91rem; display:flex; align-items:center; gap:8px; }
 .brand-dot { color:white; background:var(--orange); display:inline-grid; place-items:center; border-radius:50%; width:27px; height:27px; font-family:"Noto Serif JP",serif; }
 .eyebrow { font-family:"DM Mono",monospace; font-size:.68rem; letter-spacing:.13em; color:var(--muted); margin:36px 0 10px; }
