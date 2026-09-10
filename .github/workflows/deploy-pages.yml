@@ -28,7 +28,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir public
-          cp index.html grammar.html styles.css app.js public/
+          cp index.html grammar.html styles.css app.js grammar.js public/
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
