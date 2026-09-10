@@ -35,6 +35,9 @@ function loadTokenizer() {
 }
 
 function containsJapanese(text) { return /[\u3040-\u30ff\u3400-\u9fff]/.test(text); }
+function isRomajiInput(text) {
+  return !containsJapanese(text) && /[a-z]/i.test(text) && /^[a-zāīūēōâîûêô'’\s,.!?\-]+$/i.test(text);
+}
 
 async function translateText(text, from, to) {
   if (new TextEncoder().encode(text).length > 500) {
@@ -64,6 +67,58 @@ function kanaToRomaji(value = '') {
     output += map[kana[i]] ?? kana[i];
   }
   return output.replace(/n(?=[bmp])/g, 'm');
+}
+function romajiWordToHiragana(word) {
+  const specialWords = { konnichiwa:'こんにちは', konbanwa:'こんばんは' };
+  const normalized = word.toLowerCase()
+    .replace(/’/g, "'")
+    .replace(/[āâ]/g, 'aa').replace(/[īî]/g, 'ii').replace(/[ūû]/g, 'uu')
+    .replace(/[ēê]/g, 'ee').replace(/[ōô]/g, 'ou');
+  if (specialWords[normalized]) return specialWords[normalized];
+  const syllables = {
+    kya:'きゃ', kyu:'きゅ', kyo:'きょ', sha:'しゃ', shu:'しゅ', sho:'しょ',
+    sya:'しゃ', syu:'しゅ', syo:'しょ', cha:'ちゃ', chu:'ちゅ', cho:'ちょ',
+    tya:'ちゃ', tyu:'ちゅ', tyo:'ちょ', nya:'にゃ', nyu:'にゅ', nyo:'にょ',
+    hya:'ひゃ', hyu:'ひゅ', hyo:'ひょ', mya:'みゃ', myu:'みゅ', myo:'みょ',
+    rya:'りゃ', ryu:'りゅ', ryo:'りょ', gya:'ぎゃ', gyu:'ぎゅ', gyo:'ぎょ',
+    ja:'じゃ', ju:'じゅ', jo:'じょ', jya:'じゃ', jyu:'じゅ', jyo:'じょ',
+    bya:'びゃ', byu:'びゅ', byo:'びょ', pya:'ぴゃ', pyu:'ぴゅ', pyo:'ぴょ',
+    fa:'ふぁ', fi:'ふぃ', fe:'ふぇ', fo:'ふぉ', tsa:'つぁ', tsi:'つぃ', tse:'つぇ', tso:'つぉ',
+    shi:'し', chi:'ち', tsu:'つ', fu:'ふ', ji:'じ', dji:'ぢ', dzu:'づ',
+    ka:'か', ki:'き', ku:'く', ke:'け', ko:'こ', ga:'が', gi:'ぎ', gu:'ぐ', ge:'げ', go:'ご',
+    sa:'さ', si:'し', su:'す', se:'せ', so:'そ', za:'ざ', zi:'じ', zu:'ず', ze:'ぜ', zo:'ぞ',
+    ta:'た', ti:'ち', te:'て', to:'と', da:'だ', di:'ぢ', de:'で', do:'ど',
+    na:'な', ni:'に', nu:'ぬ', ne:'ね', no:'の', ha:'は', hi:'ひ', he:'へ', ho:'ほ',
+    ba:'ば', bi:'び', bu:'ぶ', be:'べ', bo:'ぼ', pa:'ぱ', pi:'ぴ', pu:'ぷ', pe:'ぺ', po:'ぽ',
+    ma:'ま', mi:'み', mu:'む', me:'め', mo:'も', ya:'や', yu:'ゆ', yo:'よ',
+    ra:'ら', ri:'り', ru:'る', re:'れ', ro:'ろ', wa:'わ', wi:'うぃ', we:'うぇ', wo:'を',
+    a:'あ', i:'い', u:'う', e:'え', o:'お'
+  };
+  let result = '';
+  for (let index = 0; index < normalized.length;) {
+    const current = normalized[index];
+    const next = normalized[index + 1];
+    if (current === 'n' && (index === normalized.length - 1 || next === "'" || !'aiueoy'.includes(next))) {
+      result += 'ん'; index += next === "'" ? 2 : 1; continue;
+    }
+    if (next && current === next && /[bcdfghjklmpqrstvwxyz]/.test(current) && current !== 'n') {
+      result += 'っ'; index++; continue;
+    }
+    const matched = Object.keys(syllables).find(key => normalized.slice(index).startsWith(key));
+    if (matched) { result += syllables[matched]; index += matched.length; }
+    else { result += current; index++; }
+  }
+  return result;
+}
+function romajiToJapanese(text) {
+  const particles = { wa:'は', e:'へ', o:'を', wo:'を' };
+  return text.match(/[a-zāīūēōâîûêô'’]+|[^a-zāīūēōâîûêô'’]+/gi)?.map(part => {
+    if (!/^[a-zāīūēōâîûêô'’]+$/i.test(part)) {
+      return part.replace(/\s+/g, '').replace(/,/g, '、').replace(/\./g, '。');
+    }
+    const lower = part.toLowerCase();
+    return particles[lower] || romajiWordToHiragana(part);
+  }).join('') || text;
 }
 function tokenRomaji(token) {
   // は／へ are historically written this way when they act as particles,
@@ -132,8 +187,9 @@ async function runTranslation() {
   try {
     await loadTokenizer();
     const isJapanese = containsJapanese(input) && !/[\u4e00-\u9fff]/.test(input.replace(/[\u3040-\u30ff]/g, '')) ? true : /[ぁ-んァ-ン]/.test(input);
-    const japanese = isJapanese ? input : await translateText(input, 'zh-CN', 'ja');
-    const chinese = isJapanese ? await translateText(input, 'ja', 'zh-CN') : input;
+    const romajiInput = isRomajiInput(input);
+    const japanese = isJapanese ? input : romajiInput ? romajiToJapanese(input) : await translateText(input, 'zh-CN', 'ja');
+    const chinese = isJapanese ? await translateText(input, 'ja', 'zh-CN') : romajiInput ? await translateText(japanese, 'ja', 'zh-CN') : input;
     const tokens = tokenizer.tokenize(japanese);
     const meanings = await translateTokens(tokens);
     render(tokens, meanings, japanese, chinese);
