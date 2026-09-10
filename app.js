@@ -27,7 +27,7 @@ function loadTokenizer() {
   return new Promise((resolve, reject) => {
     if (tokenizer) return resolve(tokenizer);
     if (!window.kuromoji) return reject(new Error('日语分词组件未能加载。请检查网络后重试。'));
-    kuromoji.builder({ dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/' }).build((err, built) => {
+    kuromoji.builder({ dicPath: 'node_modules/kuromoji/dict/' }).build((err, built) => {
       if (err) reject(new Error('日语词典加载失败。请检查网络后重试。'));
       else { tokenizer = built; resolve(built); }
     });
